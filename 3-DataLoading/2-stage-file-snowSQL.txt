@@ -27,6 +27,12 @@ Follow the instructions to install SnowSQL client
 7. In a SQL worksheet, use COPY INTO to load data to a table
 - truncate table, LENDER_HOLDINGS
 - SQL:
+  USE ROLE DBO_TRAINING_RAW_CONTRIBUTOR;
+  USE WAREHOUSE TRAINING_WH;
+
+  USE DATABASE TRAINING;
+  USE SCHEMA RAW;
+  
   COPY INTO "TRAINING"."RAW"."LENDER_HOLDINGS"
   FROM @~/staged/
   FILES = ('lender_holdings_sample.csv.gz')
