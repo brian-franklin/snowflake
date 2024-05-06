@@ -1,0 +1,19 @@
+Snowflake Trial Account
+1) http://signup.snowflake.com
+2) Enter your information
+3) Select options
+  -- Enterprise
+  -- Azure
+  -- East US 2
+
+
+WAREHOUSE
+
+1) Create admin roles
+  Refer to rbac/create_admin_roles.sql
+
+1) Create a warehouse
+  Refer to rbac/create_warehouse_roles.sql to create a new warehouse
+
+2) create a new databases for learning
+  Refer to rbac/create_database_schema_roles.sql to create the objects, roles and permissions
