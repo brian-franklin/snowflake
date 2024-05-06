@@ -1,0 +1,65 @@
+/*
+  Required variables:
+    wh_name
+    resmon
+    curr_user
+*/
+set wh_name = 'TRAINING_WH';
+set resmon = concat('RESMON_', $wh_name);
+set curr_user = CURRENT_USER();
+
+/* 
+  OPTIONAL : Create resource monitor for warehouse
+             NOTE - must be ACCOUNTADMIN
+*/
+USE ROLE ACCOUNTADMIN;
+GRANT USAGE, MONITOR ON WAREHOUSE  COMPUTE_WH TO ROLE SECURITYADMIN;
+
+CREATE OR REPLACE RESOURCE MONITOR IDENTIFIER($resmon)
+  WITH CREDIT_QUOTA = 200
+  TRIGGERS ON 75 PERCENT DO NOTIFY
+           ON 100 PERCENT DO SUSPEND
+           ON 110 PERCENT DO SUSPEND_IMMEDIATE;
+
+SHOW RESOURCE MONITORS;
+
+
+USE ROLE SYSADMIN;
+
+CREATE WAREHOUSE IF NOT EXISTS IDENTIFIER($wh_name)
+  WAREHOUSE_TYPE = STANDARD
+  WAREHOUSE_SIZE = XSMALL
+  MAX_CLUSTER_COUNT = 4
+  MIN_CLUSTER_COUNT = 1
+  SCALING_POLICY = STANDARD
+  AUTO_SUSPEND = 300
+  AUTO_RESUME = TRUE
+  INITIALLY_SUSPENDED = TRUE
+  ENABLE_QUERY_ACCELERATION = FALSE  
+;
+
+USE ROLE ACCOUNTADMIN;
+ALTER WAREHOUSE IDENTIFIER($wh_name)
+SET RESOURCE_MONITOR = $resmon;
+
+SHOW RESOURCE MONITORS;
+
+use role securityadmin;
+
+--Warehouse Roles
+set usage_role = concat($wh_name, '_USAGE');
+set modify_role = concat($wh_name, '_MODIFY');
+
+CREATE ROLE IF NOT EXISTS IDENTIFIER($usage_role);
+CREATE ROLE IF NOT EXISTS IDENTIFIER($modify_role);
+
+--Hierarchy
+GRANT ROLE IDENTIFIER($usage_role) TO ROLE IDENTIFIER($modify_role);
+GRANT ROLE IDENTIFIER($modify_role) TO ROLE SYSADMIN;
+
+--Privilege grants
+GRANT USAGE, MONITOR ON WAREHOUSE  IDENTIFIER($wh_name) TO ROLE IDENTIFIER($usage_role);
+GRANT OPERATE, MODIFY ON WAREHOUSE  IDENTIFIER($wh_name) TO ROLE IDENTIFIER($modify_role);
+
+-- Assign user to modify role
+GRANT ROLE IDENTIFIER($modify_role) TO USER IDENTIFIER($curr_user);

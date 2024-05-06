@@ -1,0 +1,25 @@
+Refer to the following exercise:
+https://docs.snowflake.com/en/user-guide/data-load-local-file-system-stage-ui
+
+A note about stages:
+https://docs.snowflake.com/en/user-guide/data-load-overview#internal-stages
+
+Setup:
+In a SQL worksheet, truncate table 'LENDER_HOLDINGS'
+
+1. Set role 'DBO_TRAINING_RAW_ADMIN'
+2. Create named internal stage (snowflake managed)
+  - Namespace: TRAINING.RAW
+  - Stage name: STAGE_TRAINING_RAW
+  - Directory table: off
+  - Encryption: server
+3. Change role 'DBO_TRAINING_RAW_CONTRIBUTOR'
+4. Upload files
+  - + Files
+  - Browse for lender_holdings_sample.csv
+5. Load data to existing table 'LENDER_HOLDINGS'
+  https://docs.snowflake.com/en/user-guide/data-load-web-ui#label-data-load-from-stage-to-table
+  File format options
+  - header: skip first line
+  - trim space: true
+  On Error: only load valid data
