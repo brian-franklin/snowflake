@@ -61,7 +61,7 @@ SELECT airbnbhotels
     ,t.value:link::string as URL
     ,t.value:rating::string as RATING
     ,t.value:price:currency::string as CURRENCY
-FROM ROME_HOTELS
+FROM TRAINING.RAW.ROME_HOTELS
 ,lateral flatten(input => airbnbhotels) t
 where t.value:title::string = 'Apartment in Rome'
 limit 100;

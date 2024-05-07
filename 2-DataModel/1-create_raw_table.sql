@@ -4,6 +4,7 @@
 0. Change your role to 'DBO_TRAINING_RAW_CONTRIBUTOR'
 1. Select Databases
 2. Select RAW schema from the TRAINING database
+Set warehouse to TRAINING_WH
 3. Click 'Create' -> 'Table' -> 'From file'
 4. Browse for the file, 'LENDER_HOLDINGS_SAMPLE.CSV'
   - confirm the correct namespace: TRAINING.RAW
